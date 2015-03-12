@@ -35,7 +35,7 @@ function [bic,waxis] = bicoherx (w,x,y,  nfft, wind, nsamp, overlap)
 
 % --------------------- parameter checks -----------------------------
 
-    if (size(w) ~= size(x) | size(x) ~= size(y) )
+    if (size(w) ~= size(x) || size(x) ~= size(y) )
        error(' w, x, and y should have identical dimensions')
     end
     [ly, nrecs] = size(y);
@@ -50,7 +50,7 @@ function [bic,waxis] = bicoherx (w,x,y,  nfft, wind, nsamp, overlap)
     if (nrecs > 1)                  overlap = 0;   end
     if (exist('nsamp') ~= 1)          nsamp = 0;  end
     if (nrecs > 1)                    nsamp = ly;  end
-    if (nrecs == 1 & nsamp <= 0)
+    if (nrecs == 1 && nsamp <= 0)
        nsamp = fix(ly/ (8 - 7 * overlap/100));
     end
     if (nfft  < nsamp)   nfft = 2^nextpow2(nsamp); end
@@ -62,7 +62,7 @@ function [bic,waxis] = bicoherx (w,x,y,  nfft, wind, nsamp, overlap)
 % ----------------------------------------------------------------------
     if (exist('wind') ~= 1) wind = hanning(nsamp); end
     [rw,cw] = size(wind);
-    if (min(rw,cw) ~= 1 | max(rw,cw) ~= nsamp)
+    if (min(rw,cw) ~= 1 || max(rw,cw) ~= nsamp)
 	   disp(['Segment size  is ',int2str(nsamp)])
 	   disp(['"wind" array  is ',int2str(rw),' by ',int2str(cw)])
 	   disp(['Using default window'])
@@ -88,8 +88,8 @@ function [bic,waxis] = bicoherx (w,x,y,  nfft, wind, nsamp, overlap)
         Pxx = Pxx + Xf .* CXf;
 
         ys  = y(ind);  	ys = (ys(:) - mean(ys)) .* wind;
-	Yf  = fft(ys,nfft)  / nsamp;  CYf = conj(Yf);
-	Pyy = Pyy + Yf .* CYf;
+		Yf  = fft(ys,nfft)  / nsamp;  CYf = conj(Yf);
+		Pyy = Pyy + Yf .* CYf;
 
         Yf12(:)  = CYf(mask);
         bic = bic + (Wf * Xf.') .* Yf12;
@@ -113,7 +113,7 @@ function [bic,waxis] = bicoherx (w,x,y,  nfft, wind, nsamp, overlap)
 
    hold off, clf
 %   contour(bic,4,waxis,waxis),grid
-   contour(waxis,waxis,bic,4), grid on 
+   contour(waxis,waxis,bic,4), grid on
    title('Cross-Bicoherence')
    xlabel('f1'), ylabel('f2')
    set(gcf,'Name','Hosa BICOHERX')
